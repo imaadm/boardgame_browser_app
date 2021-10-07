@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "959154133299",
+    "project_id": "boardgame-browser",
+    "storage_bucket": "boardgame-browser.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959154133299:android:881e5fa56867c49c05c646",
+        "android_client_info": {
+          "package_name": "com.boardgame_browser_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959154133299-6q9hgjheddochigkkusvjmaoobbnchs6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhgKCGZCf5lXqsE_pFjRKaj7d-5oslt1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "959154133299-6q9hgjheddochigkkusvjmaoobbnchs6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
