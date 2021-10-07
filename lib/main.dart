@@ -1,6 +1,6 @@
-import 'package:boardgame_browser_app/game.dart';
+import 'package:boardgame_browser_app/game_page.dart';
 import 'package:flutter/material.dart';
-import 'game.dart';
+import 'game_page.dart';
 import 'favorites.dart';
 import 'settings.dart';
 import 'package:filter_list/filter_list.dart';
