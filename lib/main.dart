@@ -1,10 +1,4 @@
-import 'package:boardgame_browser_app/game_page.dart';
 import 'package:flutter/material.dart';
-import 'game_page.dart';
-import 'favorites.dart';
-import 'settings.dart';
-import 'package:filter_list/filter_list.dart';
-import 'globals.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,11 +8,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Boardgame Browser',
+      title: 'Fitness App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(title: 'Boardgame Browser'),
+      home: HomePage(title: 'Fitness App'),
     );
   }
 }
@@ -32,44 +26,29 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  List<String> filterList = ["Price", "Players", "Popularity"];
-  List<String>? selectedFilterList = [];
-  Color _iconColor = Colors.grey;
-  void _openFilterDialog() async {
-    await FilterListDialog.display<String>(context,
-        listData: filterList,
-        selectedListData: selectedFilterList,
-        height: 480,
-        headlineText: "Select Count",
-        searchFieldHintText: "Search Here", choiceChipLabel: (item) {
-      return item;
-    }, validateSelectedItem: (list, val) {
-      return list!.contains(val);
-    }, onItemSearch: (list, text) {
-      if (list!.any(
-          (element) => element.toLowerCase().contains(text.toLowerCase()))) {
-        return list!
-            .where(
-                (element) => element.toLowerCase().contains(text.toLowerCase()))
-            .toList();
-      } else {
-        return [];
-      }
-    }, onApplyButtonClick: (list) {
-      if (list != null) {
-        setState(() {
-          selectedFilterList = List.from(list);
-        });
-      }
-      Navigator.pop(context);
-    });
-  }
+enum ActivityType {
+  sedentary,
+  lightlyActive,
+  moderatelyActive,
+  highlyActive,
+  extremelyActive
+}
+ActivityType? _type = ActivityType.sedentary;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      GlobalVariables.selectedIndex = index;
-    });
+enum Sex { male, female }
+Sex? _sex = Sex.male;
+
+class _HomePageState extends State<HomePage> {
+  final ageController = TextEditingController();
+  final heightController = TextEditingController();
+  final weightController = TextEditingController();
+
+  @override
+  void dispose() {
+    ageController.dispose();
+    heightController.dispose();
+    weightController.dispose();
+    super.dispose();
   }
 
   @override
@@ -100,140 +79,186 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Favorites'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FavoritesPage(
-                            title: 'Favorites',
-                          )),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
+            // ListTile(
+            //   title: const Text('Favorites'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => FavoritesPage(
+            //                 title: 'Favorites',
+            //               )),
+            //     );
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('Settings'),
+            //   onTap: () {
+            //     // Update the state of the app.
+            //     // ...
+            //   },
+            // ),
           ],
         ),
       ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        children: <Widget>[
-          //   Image(image: AssetImage('assets/appIcon.png')),
-
-          Card(
-              child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GamePage(
-                                title: 'Game',
-                              )),
-                    );
-                  },
-                  child: SizedBox(
-                    width: 200,
-                    height: 150,
-                    child: Column(
-                      children: <Widget>[
-                        Text('Example Boardgame'),
-                        IconButton(
-                            onPressed: null,
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.pink,
-                            )),
-                      ],
-                    ),
-                  ))),
-          Card(
-              child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GamePage(
-                                title: 'Game',
-                              )),
-                    );
-                  },
-                  child: SizedBox(
-                    width: 200,
-                    height: 150,
-                    child: Column(
-                      children: <Widget>[
-                        Text('Example Boardgame'),
-                        IconButton(
-                            onPressed: null,
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.pink,
-                            )),
-                      ],
-                    ),
-                  ))),
-
-          Card(
-              child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GamePage(
-                                title: 'Game',
-                              )),
-                    );
-                  },
-                  child: SizedBox(
-                    width: 200,
-                    height: 150,
-                    child: Column(
-                      children: <Widget>[
-                        Text('Example Boardgame'),
-                        IconButton(
-                            onPressed: null,
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.pink,
-                            )),
-                      ],
-                    ),
-                  ))),
-          Card(
-              child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GamePage(
-                                title: 'Game',
-                              )),
-                    );
-                  },
-                  child: SizedBox(
-                    width: 200,
-                    height: 150,
-                    child: Column(
-                      children: <Widget>[
-                        Text('Example Boardgame'),
-                        IconButton(
-                            onPressed: null,
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.pink,
-                            )),
-                      ],
-                    ),
-                  ))),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Flexible(
+                child: TextField(
+                  controller: weightController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Weight'),
+                ),
+              ),
+              Flexible(
+                child: TextField(
+                  controller: heightController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Height'),
+                ),
+              ),
+              Flexible(
+                child: TextField(
+                  controller: ageController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Age'),
+                ),
+              )
+            ],
+          ),
+          Column(children: [
+            ListTile(
+              title: const Text('Male'),
+              leading: Radio<Sex>(
+                value: Sex.male,
+                groupValue: _sex,
+                onChanged: (Sex? value) {
+                  setState(() {
+                    _sex = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Female'),
+              leading: Radio<Sex>(
+                value: Sex.female,
+                groupValue: _sex,
+                onChanged: (Sex? value) {
+                  setState(() {
+                    _sex = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Sedentary'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.sedentary,
+                groupValue: _type,
+                onChanged: (ActivityType? value) {
+                  setState(() {
+                    _type = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Lightly Active'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.lightlyActive,
+                groupValue: _type,
+                onChanged: (ActivityType? value) {
+                  setState(() {
+                    _type = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Moderately Active'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.moderatelyActive,
+                groupValue: _type,
+                onChanged: (ActivityType? value) {
+                  setState(() {
+                    _type = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Highly Active'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.highlyActive,
+                groupValue: _type,
+                onChanged: (ActivityType? value) {
+                  setState(() {
+                    _type = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Extremely Active'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.extremelyActive,
+                groupValue: _type,
+                onChanged: (ActivityType? value) {
+                  setState(() {
+                    _type = value;
+                  });
+                },
+              ),
+            ),
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white)),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        int bmr = 0;
+                        if (_sex == Sex.female) {
+                          bmr = (655 +
+                                  (4.3 * int.parse(weightController.text)) +
+                                  (4.7 * int.parse(heightController.text)) -
+                                  (4.7 * int.parse(ageController.text)))
+                              .toInt();
+                        } else {
+                          bmr = (66 +
+                                  (6.3 * double.parse(weightController.text)) +
+                                  (12.9 * double.parse(heightController.text)) -
+                                  (6.8 * double.parse(ageController.text)))
+                              .toInt();
+                        }
+                        if (_type == ActivityType.lightlyActive) {
+                          bmr = (bmr * 1.375).toInt();
+                        }
+                        if (_type == ActivityType.moderatelyActive) {
+                          bmr = (bmr * 1.55).toInt();
+                        }
+                        if (_type == ActivityType.highlyActive) {
+                          bmr = (bmr * 1.725).toInt();
+                        }
+                        if (_type == ActivityType.extremelyActive) {
+                          bmr = (bmr * 1.9.toInt());
+                        } else {
+                          bmr = (bmr * 1.2).toInt();
+                        }
+                        return AlertDialog(content: Text(bmr.toString()));
+                      });
+                },
+                child: const Text('Calculate Calories'))
+          ])
         ],
       ),
+
       // bottomNavigationBar: BottomNavigationBar(
       //   items: <BottomNavigationBarItem>[
       //     BottomNavigationBarItem(
@@ -291,7 +316,7 @@ class _HomePageState extends State<HomePage> {
       //   fixedColor: Colors.grey,
       // ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _openFilterDialog,
+        onPressed: null,
         tooltip: 'Filter',
         child: Icon(Icons.sort),
       ),
