@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'personal.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fitness App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: HomePage(title: 'Fitness App'),
     );
@@ -79,18 +80,18 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            // ListTile(
-            //   title: const Text('Favorites'),
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //           builder: (context) => FavoritesPage(
-            //                 title: 'Favorites',
-            //               )),
-            //     );
-            //   },
-            // ),
+            ListTile(
+              title: const Text('Favorites'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FavoritesPage(
+                            title: 'Favorites',
+                          )),
+                );
+              },
+            ),
             // ListTile(
             //   title: const Text('Settings'),
             //   onTap: () {
@@ -103,33 +104,39 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          Row(
-            children: [
-              Flexible(
-                child: TextField(
-                  controller: weightController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Weight'),
-                ),
-              ),
-              Flexible(
-                child: TextField(
-                  controller: heightController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Height'),
-                ),
-              ),
-              Flexible(
-                child: TextField(
-                  controller: ageController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Age'),
-                ),
-              )
-            ],
+          Padding(
+              padding: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: TextField(
+                      controller: weightController,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Weight'),
+                    ),
+                  ),
+                  Flexible(
+                    child: TextField(
+                      controller: heightController,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Height'),
+                    ),
+                  ),
+                  Flexible(
+                    child: TextField(
+                      controller: ageController,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Age'),
+                    ),
+                  )
+                ],
+              )),
+          Divider(
+            height: 30,
           ),
           Column(children: [
             ListTile(
+              visualDensity: VisualDensity(vertical: -4),
               title: const Text('Male'),
               leading: Radio<Sex>(
                 value: Sex.male,
@@ -142,6 +149,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
+              visualDensity: VisualDensity(vertical: -4),
               title: const Text('Female'),
               leading: Radio<Sex>(
                 value: Sex.female,
@@ -153,7 +161,11 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
+            Divider(
+              height: 30,
+            ),
             ListTile(
+              visualDensity: VisualDensity(vertical: -4),
               title: const Text('Sedentary'),
               leading: Radio<ActivityType>(
                 value: ActivityType.sedentary,
@@ -166,6 +178,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
+              visualDensity: VisualDensity(vertical: -4),
               title: const Text('Lightly Active'),
               leading: Radio<ActivityType>(
                 value: ActivityType.lightlyActive,
@@ -178,6 +191,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
+              visualDensity: VisualDensity(vertical: -4),
               title: const Text('Moderately Active'),
               leading: Radio<ActivityType>(
                 value: ActivityType.moderatelyActive,
@@ -190,6 +204,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
+              visualDensity: VisualDensity(vertical: -4),
               title: const Text('Highly Active'),
               leading: Radio<ActivityType>(
                 value: ActivityType.highlyActive,
@@ -202,6 +217,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
+              visualDensity: VisualDensity(vertical: -4),
               title: const Text('Extremely Active'),
               leading: Radio<ActivityType>(
                 value: ActivityType.extremelyActive,
@@ -213,10 +229,11 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
+            Divider(),
             ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                        MaterialStateProperty.all<Color>(Colors.orange),
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white)),
                 onPressed: () {
@@ -232,29 +249,66 @@ class _HomePageState extends State<HomePage> {
                               .toInt();
                         } else {
                           bmr = (66 +
-                                  (6.3 * double.parse(weightController.text)) +
-                                  (12.9 * double.parse(heightController.text)) -
-                                  (6.8 * double.parse(ageController.text)))
+                                  (6.3 * int.parse(weightController.text)) +
+                                  (12.9 * int.parse(heightController.text)) -
+                                  (6.8 * int.parse(ageController.text)))
                               .toInt();
                         }
-                        if (_type == ActivityType.lightlyActive) {
+                        if (_type == ActivityType.lightlyActive)
                           bmr = (bmr * 1.375).toInt();
-                        }
-                        if (_type == ActivityType.moderatelyActive) {
+
+                        if (_type == ActivityType.moderatelyActive)
                           bmr = (bmr * 1.55).toInt();
-                        }
-                        if (_type == ActivityType.highlyActive) {
+
+                        if (_type == ActivityType.highlyActive)
                           bmr = (bmr * 1.725).toInt();
-                        }
-                        if (_type == ActivityType.extremelyActive) {
+
+                        if (_type == ActivityType.extremelyActive)
                           bmr = (bmr * 1.9.toInt());
-                        } else {
+                        else
                           bmr = (bmr * 1.2).toInt();
-                        }
+
                         return AlertDialog(content: Text(bmr.toString()));
                       });
                 },
-                child: const Text('Calculate Calories'))
+                child: const Text('Calculate Calories')),
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.green),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white)),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        double bmi = 0;
+                        String weightClass = "";
+                        if (int.parse(ageController.text) >= 18) {
+                          bmi = ((int.parse(weightController.text) /
+                                  int.parse(heightController.text) /
+                                  int.parse(heightController.text)) *
+                              703);
+                          if (bmi < 18.5) weightClass = "Underweight";
+                          if (bmi >= 18.5 && bmi <= 24.9)
+                            weightClass = "Normal";
+                          if (bmi >= 25 && bmi <= 29.9)
+                            weightClass = "Overweight";
+                          if (bmi >= 30) weightClass = "Obese";
+                        } else
+                          weightClass = "Undefined";
+                        return AlertDialog(content: Text(weightClass));
+                      });
+                },
+                child: const Text('Calculate BMI')),
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white)),
+                onPressed: null,
+                child: const Text('Save Data'))
           ])
         ],
       ),
