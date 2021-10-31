@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'personal.dart';
 
@@ -69,13 +70,13 @@ class _HomePageState extends State<HomePage> {
               child: Text('Drawer Header'),
             ),
             ListTile(
-              title: const Text('Browse'),
+              title: const Text('Calculator'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => HomePage(
-                            title: 'Browse',
+                            title: 'Calculator',
                           )),
                 );
               },
@@ -307,8 +308,20 @@ class _HomePageState extends State<HomePage> {
                         MaterialStateProperty.all<Color>(Colors.blue),
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white)),
-                onPressed: null,
-                child: const Text('Save Data'))
+                onPressed: () {
+                  FirebaseDatabase.instance.reference().child("user").set({
+                    "age": ageController.text,
+                    "weight": weightController.text,
+                    "height": heightController.text,
+                    "sex": _sex.toString(),
+                    "activity": _type.toString()
+                  }).then((value) {
+                    return AlertDialog(content: Text("Data Saved"));
+                  }).catchError((error) {
+                    return AlertDialog(content: Text("Save Unsuccessful"));
+                  });
+                },
+                child: const Text('Save Data')),
           ])
         ],
       ),
@@ -369,12 +382,6 @@ class _HomePageState extends State<HomePage> {
       //   ],
       //   fixedColor: Colors.grey,
       // ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Filter',
-        child: Icon(Icons.sort),
-      ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

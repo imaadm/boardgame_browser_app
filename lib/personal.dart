@@ -11,6 +11,14 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
+  final calController = TextEditingController();
+
+  @override
+  void dispose() {
+    calController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,13 +36,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
               child: Text('Drawer Header'),
             ),
             ListTile(
-              title: const Text('Browse'),
+              title: const Text('Calculator'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => HomePage(
-                            title: 'Browse',
+                            title: 'Calculator',
                           )),
                 );
               },
@@ -61,7 +69,63 @@ class _FavoritesPageState extends State<FavoritesPage> {
           ],
         ),
       ),
-      body: Column(),
+      body: Center(
+        child: Column(
+          children: [
+            Flexible(
+              child: Text(
+                'Total Calories',
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text('data',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white)),
+                onPressed: () {
+                  null;
+                },
+                child: const Text('Calculate')),
+            ListTile(
+              visualDensity: VisualDensity(horizontal: -4),
+              title: const Text('Lose'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.sedentary,
+                groupValue: null,
+                onChanged: (ActivityType? value) {
+                  setState(() {});
+                },
+              ),
+            ),
+            ListTile(
+              visualDensity: VisualDensity(horizontal: -4),
+              title: const Text('Maintain'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.lightlyActive,
+                groupValue: null,
+                onChanged: (ActivityType? value) {
+                  setState(() {});
+                },
+              ),
+            ),
+            ListTile(
+              visualDensity: VisualDensity(horizontal: -4),
+              title: const Text('Gain'),
+              leading: Radio<ActivityType>(
+                value: ActivityType.moderatelyActive,
+                groupValue: null,
+                onChanged: (ActivityType? value) {
+                  setState(() {});
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
       // bottomNavigationBar: BottomNavigationBar(
       //   items: <BottomNavigationBarItem>[
       //     BottomNavigationBarItem(
@@ -119,11 +183,36 @@ class _FavoritesPageState extends State<FavoritesPage> {
       //   fixedColor: Colors.grey,
       // ),
       floatingActionButton: FloatingActionButton(
-        onPressed: null, //_openFilterDialog,
-        tooltip: 'Filter',
-        child: Icon(Icons.sort),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                    content: SingleChildScrollView(
+                  child: ListBody(
+                    children: [
+                      TextFormField(
+                          decoration: const InputDecoration(
+                              icon: Icon(Icons.fastfood),
+                              hintText: 'Input a number',
+                              labelText: 'Calories'),
+                          controller: calController),
+                      ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all<Color>(Colors.red),
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white)),
+                          onPressed: null,
+                          child: const Text('Add Meal')),
+                    ],
+                  ),
+                ));
+              });
+        },
+        tooltip: 'Add meal',
+        child: Icon(Icons.add),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
