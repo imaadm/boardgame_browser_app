@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
@@ -10,8 +11,12 @@ class FavoritesPage extends StatefulWidget {
   _FavoritesPageState createState() => _FavoritesPageState();
 }
 
+enum CalorieGoal { lose, maintain, gain }
+CalorieGoal? _goal = CalorieGoal.lose;
+
 class _FavoritesPageState extends State<FavoritesPage> {
   final calController = TextEditingController();
+  int calories = 0;
 
   @override
   void dispose() {
@@ -59,73 +64,92 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Flexible(
+            child: Text(
+              'Calorie Goal Calculator',
+              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Text(calories.toString(),
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+          ListTile(
+            visualDensity: VisualDensity(vertical: -4),
+            title: const Text('Lose'),
+            leading: Radio<CalorieGoal>(
+              value: CalorieGoal.lose,
+              groupValue: _goal,
+              onChanged: (CalorieGoal? value) {
+                setState(() {
+                  _goal = value;
+                });
               },
             ),
-          ],
-        ),
+          ),
+          ListTile(
+            visualDensity: VisualDensity(vertical: -4),
+            title: const Text('Maintain'),
+            leading: Radio<CalorieGoal>(
+              value: CalorieGoal.maintain,
+              groupValue: _goal,
+              onChanged: (CalorieGoal? value) {
+                setState(() {
+                  _goal = value;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            visualDensity: VisualDensity(vertical: -4),
+            title: const Text('Gain'),
+            leading: Radio<CalorieGoal>(
+              value: CalorieGoal.gain,
+              groupValue: _goal,
+              onChanged: (CalorieGoal? value) {
+                setState(() {
+                  _goal = value;
+                });
+              },
+            ),
+          ),
+          Row(
+            children: [
+              ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.green),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white)),
+                  onPressed: () {},
+                  child: const Text('Calculate')),
+              ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.grey),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white)),
+                  onPressed: () {
+                    setState(() {});
+                    calories = 0;
+                    FirebaseDatabase.instance.reference().child("user").update({
+                      "calories": calories,
+                    }).then((value) {
+                      return AlertDialog(content: Text("Data Saved"));
+                    }).catchError((error) {
+                      return AlertDialog(content: Text("Save Unsuccessful"));
+                    });
+                  },
+                  child: const Text('Reset')),
+            ],
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          )
+        ],
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Flexible(
-              child: Text(
-                'Total Calories',
-                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Text('data',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-            ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white)),
-                onPressed: () {
-                  null;
-                },
-                child: const Text('Calculate')),
-            ListTile(
-              visualDensity: VisualDensity(horizontal: -4),
-              title: const Text('Lose'),
-              leading: Radio<ActivityType>(
-                value: ActivityType.sedentary,
-                groupValue: null,
-                onChanged: (ActivityType? value) {
-                  setState(() {});
-                },
-              ),
-            ),
-            ListTile(
-              visualDensity: VisualDensity(horizontal: -4),
-              title: const Text('Maintain'),
-              leading: Radio<ActivityType>(
-                value: ActivityType.lightlyActive,
-                groupValue: null,
-                onChanged: (ActivityType? value) {
-                  setState(() {});
-                },
-              ),
-            ),
-            ListTile(
-              visualDensity: VisualDensity(horizontal: -4),
-              title: const Text('Gain'),
-              leading: Radio<ActivityType>(
-                value: ActivityType.moderatelyActive,
-                groupValue: null,
-                onChanged: (ActivityType? value) {
-                  setState(() {});
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+
       // bottomNavigationBar: BottomNavigationBar(
       //   items: <BottomNavigationBarItem>[
       //     BottomNavigationBarItem(
@@ -203,7 +227,22 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                   MaterialStateProperty.all<Color>(Colors.red),
                               foregroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white)),
-                          onPressed: null,
+                          onPressed: () {
+                            setState(() {});
+                            calories += int.parse(calController.text);
+                            FirebaseDatabase.instance
+                                .reference()
+                                .child("user")
+                                .update({
+                              "calories": calories,
+                            }).then((value) {
+                              return AlertDialog(content: Text("Data Saved"));
+                            }).catchError((error) {
+                              return AlertDialog(
+                                  content: Text("Save Unsuccessful"));
+                            });
+                            Navigator.pop(context);
+                          },
                           child: const Text('Add Meal')),
                     ],
                   ),

@@ -93,13 +93,6 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            // ListTile(
-            //   title: const Text('Settings'),
-            //   onTap: () {
-            //     // Update the state of the app.
-            //     // ...
-            //   },
-            // ),
           ],
         ),
       ),
@@ -280,6 +273,19 @@ class _HomePageState extends State<HomePage> {
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white)),
                 onPressed: () {
+                  FirebaseDatabase.instance
+                      .reference()
+                      .child("user")
+                      .once()
+                      .then((datasnapshot) {
+                    print("Successful");
+                    var userValues = [];
+                    datasnapshot.value.forEach((k, v) {
+                      print(k);
+                      print(v);
+                      userValues.add(v);
+                    });
+                  });
                   showDialog(
                       context: context,
                       builder: (context) {
@@ -309,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white)),
                 onPressed: () {
-                  FirebaseDatabase.instance.reference().child("user").set({
+                  FirebaseDatabase.instance.reference().child("user").update({
                     "age": ageController.text,
                     "weight": weightController.text,
                     "height": heightController.text,
