@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'personal.dart';
@@ -12,13 +12,67 @@ class ExercisePage extends StatefulWidget {
   _ExercisePageState createState() => _ExercisePageState();
 }
 
-enum CalorieGoal { lose, maintain, gain }
-CalorieGoal? _goal = CalorieGoal.lose;
+enum ExerciseType { walk, jog, bike }
+ExerciseType? _ex = ExerciseType.walk;
 
 class _ExercisePageState extends State<ExercisePage> {
+  bool startIsPressed = true;
+  bool stopIsPressed = true;
+  bool resetIsPressed = true;
+  String displayTime = "00:00:00";
+  var swatch = Stopwatch();
+  final duration = const Duration(seconds: 1);
+
+  void startTimer() {
+    Timer(duration, runTimer);
+  }
+
+  void runTimer() {
+    if (swatch.isRunning) {
+      startTimer();
+    }
+    setState(() {
+      displayTime = swatch.elapsed.inHours.toString().padLeft(2, "0") +
+          ":" +
+          (swatch.elapsed.inMinutes % 60).toString().padLeft(2, "0") +
+          ":" +
+          (swatch.elapsed.inSeconds % 60).toString().padLeft(2, "0");
+    });
+  }
+
+  void startStopwatch() {
+    setState(() {
+      stopIsPressed = false;
+      startIsPressed = false;
+    });
+    swatch.start();
+    startTimer();
+  }
+
+  void resetStopWatch() {
+    setState(() {
+      startIsPressed = true;
+      resetIsPressed = true;
+    });
+    swatch.reset();
+    displayTime = "00:00:00";
+  }
+
+  void stopStopwatch() {
+    setState(() {
+      stopIsPressed = true;
+      resetIsPressed = false;
+    });
+    swatch.stop();
+  }
+
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Widget stopwatch() {
+    return Container();
   }
 
   @override
@@ -77,7 +131,76 @@ class _ExercisePageState extends State<ExercisePage> {
         ),
       ),
       body: Column(
-        children: [],
+        children: [
+          ListTile(
+            visualDensity: VisualDensity(vertical: -4),
+            title: const Text('Walk'),
+            leading: Radio<ExerciseType>(
+              value: ExerciseType.walk,
+              groupValue: _ex,
+              onChanged: (ExerciseType? value) {
+                setState(() {
+                  _ex = value;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            visualDensity: VisualDensity(vertical: -4),
+            title: const Text('Jog'),
+            leading: Radio<ExerciseType>(
+              value: ExerciseType.jog,
+              groupValue: _ex,
+              onChanged: (ExerciseType? value) {
+                setState(() {
+                  _ex = value;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            visualDensity: VisualDensity(vertical: -4),
+            title: const Text('Bike'),
+            leading: Radio<ExerciseType>(
+              value: ExerciseType.bike,
+              groupValue: _ex,
+              onChanged: (ExerciseType? value) {
+                setState(() {
+                  _ex = value;
+                });
+              },
+            ),
+          ),
+          Text(
+            displayTime,
+            style: TextStyle(fontSize: 40),
+          ),
+          ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.green),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white)),
+              onPressed:
+                  startStopwatch, //startIsPressed ? startStopwatch : null,
+              child: const Text('Start')),
+          ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white)),
+              onPressed: stopStopwatch, //stopIsPressed ? null : stopStopwatch,
+              child: const Text('Stop')),
+          ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.grey),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white)),
+              onPressed:
+                  resetStopWatch, //resetIsPressed ? null : resetStopWatch,
+              child: const Text('Reset')),
+        ],
       ),
 
       // bottomNavigationBar: BottomNavigationBar(
