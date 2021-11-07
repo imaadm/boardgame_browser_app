@@ -71,10 +71,6 @@ class _ExercisePageState extends State<ExercisePage> {
     super.dispose();
   }
 
-  Widget stopwatch() {
-    return Container();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,22 +171,29 @@ class _ExercisePageState extends State<ExercisePage> {
             displayTime,
             style: TextStyle(fontSize: 40),
           ),
-          ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.green),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white)),
-              onPressed:
-                  startStopwatch, //startIsPressed ? startStopwatch : null,
-              child: const Text('Start')),
-          ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white)),
-              onPressed: stopStopwatch, //stopIsPressed ? null : stopStopwatch,
-              child: const Text('Stop')),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.green),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white)),
+                  onPressed:
+                      startStopwatch, //startIsPressed ? startStopwatch : null,
+                  child: const Text('Start')),
+              ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white)),
+                  onPressed:
+                      stopStopwatch, //stopIsPressed ? null : stopStopwatch,
+                  child: const Text('Stop')),
+            ],
+          ),
           ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
@@ -200,6 +203,15 @@ class _ExercisePageState extends State<ExercisePage> {
               onPressed:
                   resetStopWatch, //resetIsPressed ? null : resetStopWatch,
               child: const Text('Reset')),
+          ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white)),
+              onPressed:
+                  resetStopWatch, //resetIsPressed ? null : resetStopWatch,
+              child: const Text('Finish Exercise')),
         ],
       ),
 

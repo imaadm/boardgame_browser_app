@@ -18,6 +18,7 @@ CalorieGoal? _goal = CalorieGoal.lose;
 class _FavoritesPageState extends State<FavoritesPage> {
   final calController = TextEditingController();
   int calories = 0;
+  int bmr = 0;
   @override
   void dispose() {
     calController.dispose();
@@ -89,45 +90,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
           ),
           Text(calories.toString(),
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-          ListTile(
-            visualDensity: VisualDensity(vertical: -4),
-            title: const Text('Lose'),
-            leading: Radio<CalorieGoal>(
-              value: CalorieGoal.lose,
-              groupValue: _goal,
-              onChanged: (CalorieGoal? value) {
-                setState(() {
-                  _goal = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(vertical: -4),
-            title: const Text('Maintain'),
-            leading: Radio<CalorieGoal>(
-              value: CalorieGoal.maintain,
-              groupValue: _goal,
-              onChanged: (CalorieGoal? value) {
-                setState(() {
-                  _goal = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(vertical: -4),
-            title: const Text('Gain'),
-            leading: Radio<CalorieGoal>(
-              value: CalorieGoal.gain,
-              groupValue: _goal,
-              onChanged: (CalorieGoal? value) {
-                setState(() {
-                  _goal = value;
-                });
-              },
-            ),
-          ),
           Row(
             children: [
               ElevatedButton(
@@ -136,7 +98,34 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           MaterialStateProperty.all<Color>(Colors.green),
                       foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.white)),
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          if (bmr - calories >= 750)
+                            return AlertDialog(
+                                content: Text("Significant Caloric Deficit"));
+                          else if (bmr - calories >= 500)
+                            return AlertDialog(
+                                content: Text("Losing ~1lb / week"));
+                          else if (bmr - calories >= 300)
+                            return AlertDialog(
+                                content: Text("Slight Caloric Deficit"));
+                          else if ((bmr - calories).abs() <= 100)
+                            return AlertDialog(
+                                content: Text("Maintaining Weight"));
+                          else if (bmr - calories <= -750)
+                            return AlertDialog(
+                                content: Text("Significant Caloric Surplus"));
+                          else if (bmr - calories <= -500)
+                            return AlertDialog(
+                                content: Text("Gaining ~1lb / week"));
+                          else if (bmr - calories <= -300)
+                            return AlertDialog(
+                                content: Text("Slight Caloric Surplus"));
+                          return AlertDialog(content: Text("Error"));
+                        });
+                  },
                   child: const Text('Calculate')),
               ElevatedButton(
                   style: ButtonStyle(
@@ -169,7 +158,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 showDialog(
                     context: context,
                     builder: (context) {
-                      int bmr = 0;
                       if (HomePage.userValues[0] == Sex.female) {
                         bmr = (655 +
                                 (4.3 * int.parse(HomePage.userValues[5])) +
@@ -202,11 +190,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       return AlertDialog(content: Text(bmr.toString()));
                     });
               },
-              child: const Text('Calculate Calories')),
+              child: const Text('Calculate BMR')),
           ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.green),
+                      MaterialStateProperty.all<Color>(Colors.deepOrange),
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white)),
               onPressed: () {
