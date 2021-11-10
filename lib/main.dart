@@ -67,30 +67,30 @@ class _HomePageState extends State<HomePage> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.red,
               ),
-              child: Text('Drawer Header'),
+              child: Text('Cal Pal'),
             ),
             ListTile(
-              title: const Text('Calculator'),
+              title: const Text('Personal'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => HomePage(
-                            title: 'Calculator',
+                            title: 'Personal',
                           )),
                 );
               },
             ),
             ListTile(
-              title: const Text('Favorites'),
+              title: const Text('Calorie Calculator'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => FavoritesPage(
-                            title: 'Favorites',
+                            title: 'Calorie Calculator',
                           )),
                 );
               },
