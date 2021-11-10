@@ -12,18 +12,19 @@ class ExercisePage extends StatefulWidget {
   _ExercisePageState createState() => _ExercisePageState();
 }
 
-enum ExerciseType { walk, jog, bike }
-ExerciseType? _ex = ExerciseType.walk;
+enum ExerciseType { light, moderate, vigorous }
+ExerciseType? _ex = ExerciseType.light;
 
 class _ExercisePageState extends State<ExercisePage> {
   final workouts = [
-    'Walking',
+    'Hiking',
     'Jogging',
     'Biking',
     'Basketball',
     'Calisthenics',
     'Weights'
   ];
+  double met = 0;
   String? value;
   bool startIsPressed = true;
   bool stopIsPressed = true;
@@ -160,7 +161,7 @@ class _ExercisePageState extends State<ExercisePage> {
                       ],
                     ),
                     leading: Radio<ExerciseType>(
-                      value: ExerciseType.walk,
+                      value: ExerciseType.light,
                       groupValue: _ex,
                       onChanged: (ExerciseType? value) {
                         setState(() {
@@ -183,7 +184,7 @@ class _ExercisePageState extends State<ExercisePage> {
                         ],
                       ),
                       leading: Radio<ExerciseType>(
-                        value: ExerciseType.jog,
+                        value: ExerciseType.moderate,
                         groupValue: _ex,
                         onChanged: (ExerciseType? value) {
                           setState(() {
@@ -208,7 +209,7 @@ class _ExercisePageState extends State<ExercisePage> {
                         ),
                       ),
                       leading: Radio<ExerciseType>(
-                        value: ExerciseType.bike,
+                        value: ExerciseType.vigorous,
                         groupValue: _ex,
                         onChanged: (ExerciseType? value) {
                           setState(() {
@@ -267,10 +268,44 @@ class _ExercisePageState extends State<ExercisePage> {
                       MaterialStateProperty.all<Color>(Colors.white)),
               onPressed: () {
                 setState(() {});
-                exerciseTime = swatch.elapsed.inSeconds;
-                // if (_ex == ExerciseType.walk)
-                // if (_ex == ExerciseType.bike)
-                // if (_ex == ExerciseType.jog)
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    if (_ex == ExerciseType.light) {
+                      if (value == workouts[0]) met = 5.3; //hiking
+                      if (value == workouts[1]) met = 6; //jogging
+                      if (value == workouts[2]) met = 6.8; //biking
+                      if (value == workouts[3]) met = 6; //basketball
+                      if (value == workouts[4]) met = 2.8; //calisthenics
+                      if (value == workouts[5]) met = 3.5; //weights
+                    }
+                    if (_ex == ExerciseType.moderate) {
+                      if (value == workouts[0]) met = 6; //hiking
+                      if (value == workouts[1]) met = 7; //jogging
+                      if (value == workouts[2]) met = 7.5; //biking
+                      if (value == workouts[3]) met = 6.5; //basketball
+                      if (value == workouts[4]) met = 3.8; //calisthenics
+                      if (value == workouts[5]) met = 5; //weights
+                    }
+                    if (_ex == ExerciseType.vigorous) {
+                      if (value == workouts[0]) met = 7.8; //hiking
+                      if (value == workouts[1]) met = 9; //jogging
+                      if (value == workouts[2]) met = 10; //biking
+                      if (value == workouts[3]) met = 8; //basketball
+                      if (value == workouts[4]) met = 8; //calisthenics
+                      if (value == workouts[5]) met = 6; //weights
+                    }
+                    int calsBurned =
+                        (((int.parse(HomePage.userValues[5]) * 0.453592) *
+                                3.5 *
+                                met *
+                                (swatch.elapsed.inSeconds / 60)) ~/
+                            200);
+                    return AlertDialog(
+                        content:
+                            Text('Calories Burned: ' + calsBurned.toString()));
+                  },
+                );
               },
               child: const Text('Finish Exercise')),
         ],
