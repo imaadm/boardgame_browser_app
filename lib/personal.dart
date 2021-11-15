@@ -84,7 +84,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         children: [
           Flexible(
             child: Text(
-              'Calorie Goal Calculator',
+              'Calorie Intake Calculator',
               style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
             ),
           ),
@@ -102,28 +102,27 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          if (bmr - calories >= 750)
+                          if (bmr - calories >= 1000)
                             return AlertDialog(
-                                content: Text("Significant Caloric Deficit"));
+                                content: Text("Losing over 2lb/week"));
                           else if (bmr - calories >= 500)
                             return AlertDialog(
                                 content: Text("Losing ~1lb / week"));
                           else if (bmr - calories >= 300)
                             return AlertDialog(
                                 content: Text("Slight Caloric Deficit"));
-                          else if ((bmr - calories).abs() <= 100)
+                          else if (bmr - calories <= -1000)
                             return AlertDialog(
-                                content: Text("Maintaining Weight"));
-                          else if (bmr - calories <= -750)
-                            return AlertDialog(
-                                content: Text("Significant Caloric Surplus"));
+                                content: Text("Gaining over 2lb/week"));
                           else if (bmr - calories <= -500)
                             return AlertDialog(
-                                content: Text("Gaining ~1lb / week"));
+                                content: Text("Gaining ~1lb/ week"));
                           else if (bmr - calories <= -300)
                             return AlertDialog(
                                 content: Text("Slight Caloric Surplus"));
-                          return AlertDialog(content: Text("Error"));
+                          else
+                            return AlertDialog(
+                                content: Text("Maintaining Weight"));
                         });
                   },
                   child: const Text('Calculate')),
