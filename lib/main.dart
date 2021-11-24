@@ -5,6 +5,44 @@ import 'exercise.dart';
 
 void main() {
   runApp(MyApp());
+  int tempCount = 0;
+  FirebaseDatabase.instance
+      .reference()
+      .child("user")
+      .once()
+      .then((datasnapshot) {
+    print("Successful");
+    datasnapshot.value.forEach((k, v) {
+      // print(k);
+      print(v);
+      (HomePage.userValues).add(v);
+      //print(userValues[v]);
+    });
+  });
+  FirebaseDatabase.instance
+      .reference()
+      .child("daily")
+      .once()
+      .then((datasnapshot) {
+    print("Successful");
+    datasnapshot.value.forEach((k, v) {
+      tempCount++;
+      // print(k);
+      print(v);
+      (FavoritesPage.dailyCals).add(v);
+      //print(userValues[v]);
+    });
+    FavoritesPage.dayTracker = tempCount;
+  });
+  FirebaseDatabase.instance.reference().once().then((datasnapshot) {
+    print("Successful");
+    datasnapshot.value.forEach((k, v) {
+      // print(k);
+      print(v);
+      FavoritesPage.calories[0] = v;
+      //print(userValues[v]);
+    });
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -272,66 +310,21 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
                 child: const Text('Save Data')),
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white)),
+                onPressed: () {
+                  setState(() {});
+
+                  FirebaseDatabase.instance.reference().child("user").set({});
+                },
+                child: const Text('Clear Data')),
           ])
         ],
       ),
-
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //         label: 'FavoritesButton',
-      //         icon: IconButton(
-      //             onPressed: () {
-      //               Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => FavoritesPage(
-      //                           title: 'Favorites',
-      //                         )),
-      //               );
-      //               setState(() {
-      //                 _iconColor = Colors.blue;
-      //               });
-      //             },
-      //             icon: Icon(
-      //               Icons.favorite,
-      //               color: _iconColor,
-      //             ))),
-      //     BottomNavigationBarItem(
-      //         label: 'BrowseButton',
-      //         icon: IconButton(
-      //             onPressed: () {
-      //               Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => HomePage(
-      //                           title: 'Browse',
-      //                         )),
-      //               );
-      //               setState(() {
-      //                 _iconColor = Colors.blue;
-      //               });
-      //             },
-      //             icon: Icon(
-      //               Icons.favorite,
-      //               color: _iconColor,
-      //             ))),
-      //     BottomNavigationBarItem(
-      //         label: 'SettingsButton',
-      //         icon: IconButton(
-      //             onPressed: () {
-      //               Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => GamePage(
-      //                           title: 'Settings',
-      //                         )),
-      //               );
-      //             },
-      //             icon: Icon(Icons.settings))),
-      //   ],
-      //   fixedColor: Colors.grey,
-      // ),
     );
   }
 }

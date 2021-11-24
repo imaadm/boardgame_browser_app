@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'personal.dart';
@@ -295,12 +296,16 @@ class _ExercisePageState extends State<ExercisePage> {
                       if (value == workouts[4]) met = 8; //calisthenics
                       if (value == workouts[5]) met = 6; //weights
                     }
-                    int calsBurned =
-                        (((int.parse(HomePage.userValues[5]) * 0.453592) *
-                                3.5 *
-                                met *
-                                (swatch.elapsed.inSeconds / 60)) ~/
-                            200);
+                    int calsBurned = (((int.parse(HomePage.userValues[4]) *
+                                0.453592) *
+                            3.5 *
+                            met *
+                            (/*swatch.elapsed.inSeconds*/ 1200 /*set to 1200 seconds (20minutes) for test*/ /
+                                60)) ~/
+                        200);
+                    FirebaseDatabase.instance.reference().update({
+                      ("calories"): FavoritesPage.calories[0] -= calsBurned,
+                    });
                     return AlertDialog(
                         content:
                             Text('Calories Burned: ' + calsBurned.toString()));
@@ -310,63 +315,6 @@ class _ExercisePageState extends State<ExercisePage> {
               child: const Text('Finish Exercise')),
         ],
       ),
-
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //         label: 'FavoritesButton',
-      //         icon: IconButton(
-      //             onPressed: () {
-      //               Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => FavoritesPage(
-      //                           title: 'Favorites',
-      //                         )),
-      //               );
-      //               setState(() {
-      //                 _iconColor = Colors.blue;
-      //               });
-      //             },
-      //             icon: Icon(
-      //               Icons.favorite,
-      //               color: _iconColor,
-      //             ))),
-      //     BottomNavigationBarItem(
-      //         label: 'BrowseButton',
-      //         icon: IconButton(
-      //             onPressed: () {
-      //               Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => HomePage(
-      //                           title: 'Browse',
-      //                         )),
-      //               );
-      //               setState(() {
-      //                 _iconColor = Colors.blue;
-      //               });
-      //             },
-      //             icon: Icon(
-      //               Icons.favorite,
-      //               color: _iconColor,
-      //             ))),
-      //     BottomNavigationBarItem(
-      //         label: 'SettingsButton',
-      //         icon: IconButton(
-      //             onPressed: () {
-      //               Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => GamePage(
-      //                           title: 'Settings',
-      //                         )),
-      //               );
-      //             },
-      //             icon: Icon(Icons.settings))),
-      //   ],
-      //   fixedColor: Colors.grey,
-      // ),
     );
   }
 }
