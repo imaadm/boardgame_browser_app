@@ -1,10 +1,10 @@
 # Cal Pal
-Calorie Calulator App for Android using Flutter
-Takes health information to accurately calculate BMI, BMR, calorie intake and expected weight change
-Implements an exercise timer which calculates calories burned during exercise time
-Track your total calories per day
+Calorie Calulator App for Android using Flutter <br/>
+Takes health information to accurately calculate BMI, BMR, calorie intake and expected weight change <br/>
+Implements an exercise timer which calculates calories burned during exercise time <br/>
+Track your total calories per day <br />
 
-Coming Soon:
-Calorie Goals
-More exercise support
+Coming Soon: <br />
+Calorie Goals <br />
+More exercise support <br />
 Improved UI
