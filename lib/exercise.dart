@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
@@ -104,7 +105,10 @@ class _ExercisePageState extends State<ExercisePage> {
               decoration: BoxDecoration(
                 color: Colors.red,
               ),
-              child: Text('Cal Pal'),
+              child: Text(
+                'Cal Pal',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ),
             ListTile(
               title: const Text('Personal'),
@@ -119,13 +123,13 @@ class _ExercisePageState extends State<ExercisePage> {
               },
             ),
             ListTile(
-              title: const Text('Calorie Calculator'),
+              title: const Text('Calculator'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => FavoritesPage(
-                            title: 'Calorie Calculator',
+                            title: 'Calculator',
                           )),
                 );
               },
@@ -268,6 +272,9 @@ class _ExercisePageState extends State<ExercisePage> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white)),
               onPressed: () {
+                final FirebaseAuth auth = FirebaseAuth.instance;
+                final User? user = auth.currentUser;
+                final uid = user!.uid;
                 setState(() {});
                 showDialog(
                   context: context,
@@ -296,15 +303,17 @@ class _ExercisePageState extends State<ExercisePage> {
                       if (value == workouts[4]) met = 8; //calisthenics
                       if (value == workouts[5]) met = 6; //weights
                     }
-                    int calsBurned = (((int.parse(HomePage.userValues[4]) *
+                    int calsBurned = (((int.parse(HomePage.userValues[5]) *
                                 0.453592) *
                             3.5 *
                             met *
-                            (/*swatch.elapsed.inSeconds*/ 1200 /*set to 1200 seconds (20minutes) for test*/ /
+                            (swatch.elapsed
+                                    .inSeconds /* 1200  set to 1200 seconds (20minutes) for test*/ /
                                 60)) ~/
                         200);
                     FirebaseDatabase.instance.reference().update({
-                      ("calories"): FavoritesPage.calories[0] -= calsBurned,
+                      ("user" + uid + "/calories"): FavoritesPage.calories[0] -=
+                          calsBurned,
                     });
                     return AlertDialog(
                         content:

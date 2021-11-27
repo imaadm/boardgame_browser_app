@@ -1,27 +1,33 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'personal.dart';
 import 'exercise.dart';
+import 'login.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final User? user = auth.currentUser;
+  final uid = user!.uid;
   int tempCount = 0;
   FirebaseDatabase.instance
       .reference()
-      .child("user")
+      .child("user" + uid)
       .once()
       .then((datasnapshot) {
     print("Successful");
     datasnapshot.value.forEach((k, v) {
-      // print(k);
       print(v);
       (HomePage.userValues).add(v);
-      //print(userValues[v]);
     });
   });
   FirebaseDatabase.instance
       .reference()
-      .child("daily")
+      .child("daily" + uid)
       .once()
       .then((datasnapshot) {
     print("Successful");
@@ -30,30 +36,29 @@ void main() {
       // print(k);
       print(v);
       (FavoritesPage.dailyCals).add(v);
-      //print(userValues[v]);
     });
     FavoritesPage.dayTracker = tempCount;
   });
-  FirebaseDatabase.instance.reference().once().then((datasnapshot) {
-    print("Successful");
-    datasnapshot.value.forEach((k, v) {
-      // print(k);
-      print(v);
-      FavoritesPage.calories[0] = v;
-      //print(userValues[v]);
-    });
-  });
+  // FirebaseDatabase.instance.reference().once().then((datasnapshot) {
+  //   print("Successful");
+  //   datasnapshot.value.forEach((k, v) {
+  //     print(v);
+  //     FavoritesPage.calories[0] = v;
+  //   });
+  // });
+  FavoritesPage.calories[0] = HomePage.userValues[2];
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fitness App',
+      title: 'Cal Pal',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: HomePage(title: 'Fitness App'),
+      home: LoginPage(title: 'Login'),
     );
   }
 }
@@ -107,7 +112,10 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                 color: Colors.red,
               ),
-              child: Text('Cal Pal'),
+              child: Text(
+                'Cal Pal',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ),
             ListTile(
               title: const Text('Personal'),
@@ -122,13 +130,13 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              title: const Text('Calorie Calculator'),
+              title: const Text('Calculator'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => FavoritesPage(
-                            title: 'Calorie Calculator',
+                            title: 'Calculator',
                           )),
                 );
               },
@@ -283,10 +291,17 @@ class _HomePageState extends State<HomePage> {
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white)),
                 onPressed: () {
-                  FirebaseDatabase.instance.reference().child("user").update({
+                  final FirebaseAuth auth = FirebaseAuth.instance;
+                  final User? user = auth.currentUser;
+                  final uid = user!.uid;
+                  FirebaseDatabase.instance
+                      .reference()
+                      .child("user" + uid)
+                      .update({
                     "age": ageController.text,
                     "weight": weightController.text,
                     "height": heightController.text,
+                    "calories": 0,
                     "sex": _sex.toString(),
                     "activity": _type.toString()
                   }).then((value) {
@@ -297,17 +312,16 @@ class _HomePageState extends State<HomePage> {
                   (HomePage.userValues).clear();
                   FirebaseDatabase.instance
                       .reference()
-                      .child("user")
+                      .child("user" + uid)
                       .once()
                       .then((datasnapshot) {
                     print("Successful");
                     datasnapshot.value.forEach((k, v) {
-                      // print(k);
                       print(v);
                       (HomePage.userValues).add(v);
-                      //print(userValues[v]);
                     });
                   });
+                  print(HomePage.userValues);
                 },
                 child: const Text('Save Data')),
             ElevatedButton(
@@ -318,8 +332,13 @@ class _HomePageState extends State<HomePage> {
                         MaterialStateProperty.all<Color>(Colors.white)),
                 onPressed: () {
                   setState(() {});
-
-                  FirebaseDatabase.instance.reference().child("user").set({});
+                  final FirebaseAuth auth = FirebaseAuth.instance;
+                  final User? user = auth.currentUser;
+                  final uid = user!.uid;
+                  FirebaseDatabase.instance
+                      .reference()
+                      .child("user" + uid)
+                      .set({});
                 },
                 child: const Text('Clear Data')),
           ])

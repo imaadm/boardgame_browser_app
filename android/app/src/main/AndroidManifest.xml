@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.boardgame_browser_app">
    <application
-        android:label="boardgame_browser_app"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Cal Pal"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

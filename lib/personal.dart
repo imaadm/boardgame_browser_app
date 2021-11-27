@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
@@ -14,11 +15,9 @@ class FavoritesPage extends StatefulWidget {
   _FavoritesPageState createState() => _FavoritesPageState();
 }
 
-enum CalorieGoal { lose, maintain, gain }
-CalorieGoal? _goal = CalorieGoal.lose;
-
 class _FavoritesPageState extends State<FavoritesPage> {
   final calController = TextEditingController();
+
   int bmr = 0;
   int count = 1;
 
@@ -42,7 +41,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
               decoration: BoxDecoration(
                 color: Colors.red,
               ),
-              child: Text('Cal Pal'),
+              child: Text(
+                'Cal Pal',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ),
             ListTile(
               title: const Text('Personal'),
@@ -57,13 +59,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
               },
             ),
             ListTile(
-              title: const Text('Calorie Calculator'),
+              title: const Text('Calculator'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => FavoritesPage(
-                            title: 'Calorie Calculator',
+                            title: 'Calculator',
                           )),
                 );
               },
@@ -102,6 +104,37 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     showDialog(
                         context: context,
                         builder: (context) {
+                          if (HomePage.userValues[4] == Sex.female) {
+                            bmr = (655 +
+                                    (4.3 * int.parse(HomePage.userValues[5])) +
+                                    (4.7 * int.parse(HomePage.userValues[3])) -
+                                    (4.7 * int.parse(HomePage.userValues[1])))
+                                .toInt();
+                          } else {
+                            bmr = (66 +
+                                    (6.3 * int.parse(HomePage.userValues[5])) +
+                                    (12.9 * int.parse(HomePage.userValues[3])) -
+                                    (6.8 * int.parse(HomePage.userValues[1])))
+                                .toInt();
+                          }
+                          if (HomePage.userValues[0] ==
+                              ActivityType.lightlyActive)
+                            bmr = (bmr * 1.375).toInt();
+
+                          if (HomePage.userValues[0] ==
+                              ActivityType.moderatelyActive)
+                            bmr = (bmr * 1.55).toInt();
+
+                          if (HomePage.userValues[0] ==
+                              ActivityType.highlyActive)
+                            bmr = (bmr * 1.725).toInt();
+
+                          if (HomePage.userValues[0] ==
+                              ActivityType.extremelyActive)
+                            bmr = (bmr * 1.9.toInt());
+                          else
+                            bmr = (bmr * 1.2).toInt();
+
                           if (bmr - FavoritesPage.calories[0] >= 1000)
                             return AlertDialog(
                                 content: Text("Losing over 2lb/week"));
@@ -133,8 +166,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.white)),
                   onPressed: () {
+                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    final User? user = auth.currentUser;
+                    final uid = user!.uid;
                     setState(() {});
                     FavoritesPage.calories[0] = 0;
+                    FirebaseDatabase.instance.reference().update({
+                      ("user" + uid + "/calories"): FavoritesPage.calories[0],
+                    });
                   },
                   child: const Text('Reset')),
             ],
@@ -147,16 +186,23 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white)),
               onPressed: () {
+                final FirebaseAuth auth = FirebaseAuth.instance;
+                final User? user = auth.currentUser;
+                final uid = user!.uid;
                 setState(() {});
                 FavoritesPage.dailyCals.add(FavoritesPage.calories[0]);
                 FavoritesPage.calories[0] = 0;
-                FirebaseDatabase.instance.reference().child("daily").update({
+                FirebaseDatabase.instance.reference().update({
+                  ("user" + uid + "/calories"): FavoritesPage.calories[0],
+                });
+                FirebaseDatabase.instance
+                    .reference()
+                    .child("daily" + uid)
+                    .update({
                   ("calories" + (FavoritesPage.dayTracker).toString()):
                       FavoritesPage.dailyCals[FavoritesPage.dayTracker],
                 });
                 FavoritesPage.dayTracker++;
-
-                // Navigator.pop(context);
               },
               child: const Text('End Day')),
           Row(
@@ -171,16 +217,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          if (HomePage.userValues[3] == Sex.female) {
+                          if (HomePage.userValues[4] == Sex.female) {
                             bmr = (655 +
-                                    (4.3 * int.parse(HomePage.userValues[4])) +
-                                    (4.7 * int.parse(HomePage.userValues[2])) -
+                                    (4.3 * int.parse(HomePage.userValues[5])) +
+                                    (4.7 * int.parse(HomePage.userValues[3])) -
                                     (4.7 * int.parse(HomePage.userValues[1])))
                                 .toInt();
                           } else {
                             bmr = (66 +
-                                    (6.3 * int.parse(HomePage.userValues[4])) +
-                                    (12.9 * int.parse(HomePage.userValues[2])) -
+                                    (6.3 * int.parse(HomePage.userValues[5])) +
+                                    (12.9 * int.parse(HomePage.userValues[3])) -
                                     (6.8 * int.parse(HomePage.userValues[1])))
                                 .toInt();
                           }
@@ -221,9 +267,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           double bmi = 0;
                           String weightClass = "";
                           if (int.parse(HomePage.userValues[1]) >= 18) {
-                            bmi = ((int.parse(HomePage.userValues[4]) /
-                                    int.parse(HomePage.userValues[2]) /
-                                    int.parse(HomePage.userValues[2])) *
+                            bmi = ((int.parse(HomePage.userValues[5]) /
+                                    int.parse(HomePage.userValues[3]) /
+                                    int.parse(HomePage.userValues[3])) *
                                 703);
                             if (bmi < 18.5) weightClass = "Underweight";
                             if (bmi >= 18.5 && bmi <= 24.9)
@@ -246,12 +292,21 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white)),
               onPressed: () {
+                final FirebaseAuth auth = FirebaseAuth.instance;
+                final User? user = auth.currentUser;
+                final uid = user!.uid;
                 setState(() {});
 
-                FirebaseDatabase.instance.reference().child("daily").set({});
+                FirebaseDatabase.instance
+                    .reference()
+                    .child("daily" + uid)
+                    .set({});
                 FavoritesPage.dayTracker = 0;
                 FavoritesPage.dailyCals.clear();
-                // Navigator.pop(context);
+                FavoritesPage.calories[0] = 0;
+                FirebaseDatabase.instance.reference().update({
+                  ("user" + uid + "/calories"): FavoritesPage.calories[0],
+                });
               },
               child: const Text('Clear Data')),
           Expanded(
@@ -294,11 +349,15 @@ class _FavoritesPageState extends State<FavoritesPage> {
                               foregroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white)),
                           onPressed: () {
+                            final FirebaseAuth auth = FirebaseAuth.instance;
+                            final User? user = auth.currentUser;
+                            final uid = user!.uid;
                             setState(() {});
                             FavoritesPage.calories[0] +=
                                 int.parse(calController.text);
                             FirebaseDatabase.instance.reference().update({
-                              ("calories"): FavoritesPage.calories[0],
+                              ("user" + uid + "/calories"):
+                                  FavoritesPage.calories[0],
                             });
                             Navigator.pop(context);
                           },
