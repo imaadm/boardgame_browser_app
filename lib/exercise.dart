@@ -303,14 +303,12 @@ class _ExercisePageState extends State<ExercisePage> {
                       if (value == workouts[4]) met = 8; //calisthenics
                       if (value == workouts[5]) met = 6; //weights
                     }
-                    int calsBurned = (((int.parse(HomePage.userValues[5]) *
-                                0.453592) *
-                            3.5 *
-                            met *
-                            (swatch.elapsed
-                                    .inSeconds /* 1200  set to 1200 seconds (20minutes) for test*/ /
-                                60)) ~/
-                        200);
+                    int calsBurned =
+                        (((int.parse(HomePage.userValues[5]) * 0.453592) *
+                                3.5 *
+                                met *
+                                (swatch.elapsed.inSeconds / 60)) ~/
+                            200);
                     FirebaseDatabase.instance.reference().update({
                       ("user" + uid + "/calories"): FavoritesPage.calories[0] -=
                           calsBurned,

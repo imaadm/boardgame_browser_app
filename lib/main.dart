@@ -39,13 +39,7 @@ void main() async {
     });
     FavoritesPage.dayTracker = tempCount;
   });
-  // FirebaseDatabase.instance.reference().once().then((datasnapshot) {
-  //   print("Successful");
-  //   datasnapshot.value.forEach((k, v) {
-  //     print(v);
-  //     FavoritesPage.calories[0] = v;
-  //   });
-  // });
+
   FavoritesPage.calories[0] = HomePage.userValues[2];
 }
 
@@ -164,6 +158,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Flexible(
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: weightController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(), labelText: 'Weight'),
@@ -171,6 +166,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Flexible(
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: heightController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(), labelText: 'Height'),
@@ -178,6 +174,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Flexible(
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: ageController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(), labelText: 'Age'),
